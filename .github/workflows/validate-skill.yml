@@ -26,10 +26,15 @@ jobs:
         run: node .github/scripts/check-skill.mjs
 
       - name: Skill discovery
+        env:
+          NO_COLOR: '1'
         run: |
           # The CLI version is pinned on purpose: the assertion below reads its
           # output format. Bump the pin, re-check the format, then keep this step.
+          # GitHub Actions sets CI, which makes the CLI colourise even when piped,
+          # so strip escape sequences before matching.
           out="$(npx --yes skills@1.7.2 add . --list 2>&1)"
-          printf '%s\n' "$out"
-          printf '%s\n' "$out" | grep -q 'Found 1 skill' || { echo "::error::expected exactly one skill in this repository"; exit 1; }
-          printf '%s\n' "$out" | grep -q 'feynman-learning' || { echo "::error::feynman-learning missing from discovery output"; exit 1; }
+          clean="$(printf '%s\n' "$out" | sed -e 's/\x1b\[[0-9;?]*[A-Za-z]//g')"
+          printf '%s\n' "$clean"
+          printf '%s\n' "$clean" | grep -q 'Found 1 skill' || { echo "::error::expected exactly one skill in this repository"; exit 1; }
+          printf '%s\n' "$clean" | grep -q 'feynman-learning' || { echo "::error::feynman-learning missing from discovery output"; exit 1; }
