@@ -66,6 +66,8 @@ npx skills use JJjyJJ7F3/feynman-learning@feynman-learning --agent claude-code
 | `SKILL.md` | The skill itself: session modes, ten-phase workflow, gap taxonomy, mastery rubric, interaction rules |
 | `references/diagnostic-rubric.md` | Signals of shallow understanding, probe families, feedback format — loaded when a diagnosis needs to be explicit |
 | `assets/session-template.md` | Fill-in worksheet for running a session yourself |
+| `.github/workflows/validate-skill.yml` | CI: on every push and pull request to `main`, checks the frontmatter and that the `skills` CLI still discovers exactly this one skill |
+| `.gitattributes` | Pins LF line endings for every checkout, whatever the local Git configuration says |
 
 ## Maintenance
 
@@ -79,6 +81,9 @@ never edit it in place.
    ```bash
    npx skills@latest add JJjyJJ7F3/feynman-learning -g -a codex -y
    ```
+
+Pushing to `main` also runs CI. A red run means the repository no longer installs cleanly — read the failing step
+before re-installing anything.
 
 To try unpublished edits before pushing, install from the local checkout, then run the command above once the
 change is published:
